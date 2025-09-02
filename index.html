@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Каталог — Бери.Бел</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8f9fa;
+      color: #1a1a1a;
+      padding: 10px;
+      min-height: 100vh;
+    }
+    .header {
+      text-align: center;
+      padding: 15px;
+      background: #1a73e8;
+      color: white;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+    .product {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      padding: 15px;
+    }
+    .product img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      display: block;
+      margin-bottom: 12px;
+    }
+    .product h3 {
+      font-size: 1.2rem;
+      color: #1a73e8;
+      margin-bottom: 8px;
+    }
+    .product p {
+      color: #555;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .product .price {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #1a73e8;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+    }
+    .controls button {
+      width: 40px;
+      height: 40px;
+      font-size: 1.2rem;
+      background: #f0f0f0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .controls input {
+      width: 60px;
+      height: 40px;
+      text-align: center;
+      font-size: 1.1rem;
+      border: 1px solid #ddd;
+      margin: 0 10px;
+      border-radius: 6px;
+    }
+    .cart-button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: #1a73e8;
+      color: white;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 8px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .cart-button:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+    }
+    .cart-summary {
+      margin-top: 30px;
+      padding: 15px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed #eee;
+    }
+    .cart-total {
+      font-weight: bold;
+      text-align: right;
+      margin-top: 10px;
+      font-size: 1.1rem;
+    }
+    .checkout {
+      margin-top: 20px;
+    }
+    .checkout input, .checkout textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    .checkout button {
+      width: 100%;
+      padding: 14px;
+      background: #0d5b0d;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .empty-cart {
+      text-align: center;
+      color: #777;
+      font-style: italic;
+      padding: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🛒 Каталог — Бери.Бел</h1>
+  </div>
+
+  <div id="products">
+    <!-- Товар 1 -->
+    <div class="product">
+      <img src="https://raw.githubusercontent.com/al2703iv-ai/my-telegram-catalog-1/main/тов%201.jpg" alt="Тазобедренная часть говяжья" onerror="this.src='https://via.placeholder.com/180?text=Фото'; this.style.backgroundColor='#eee';">
+      <h3>Тазобедренная часть говяжья</h3>
+      <p>мякоть тазобедренной части, охлажденная, замороженная, вакуумная упаковка</p>
+      <p class="price">19,50 BYN / кг</p>
+      <div class="controls">
+        <button onclick="changeCount(1, -1)">−</button>
+        <input type="text" id="count_1" value="0" readonly>
+        <button onclick="changeCount(1, 1)">+</button>
+      </div>
+      <button class="cart-button" onclick="addToCart(1)">Добавить в корзину</button>
+    </div>
+
+    <!-- Товар 2 -->
+    <div class="product">
+      <img src="https:// raw.githubusercontent.com/al2703iv-ai/my-telegram-catalog-1/main/тов%202.jpg" alt="Лопаточная часть говяжья" onerror="this.src='https://via.placeholder.com/180?text=Фото'; this.style.backgroundColor='#eee';">
+      <h3>Лопаточная часть говяжья</h3>
+      <p>мякоть лопаточной части, охлажденная, замороженная, вакуумная упаковка</p>
+      <p class="price">18,50 BYN / кг</p>
+      <div class="controls">
+        <button onclick="changeCount(2, -1)">−</button>
+        <input type="text" id="count_2" value="0" readonly>
+        <button onclick="changeCount(2, 1)">+</button>
+      </div>
+      <button class="cart-button" onclick="addToCart(2)">Добавить в корзину</button>
+    </div>
+
+    <!-- Товар 3 -->
+    <div class="product">
+      <img src="https:// raw.githubusercontent.com/al2703iv-ai/my-telegram-catalog-1/main/тов%203.jpg" alt="Длиннейшая мышца говяжья" onerror="this.src='https://via.placeholder.com/180?text=Фото'; this.style.backgroundColor='#eee';">
+      <h3>Длиннейшая мышца говяжья</h3>
+      <p>спинно-поясничный отруб, охлажденный, замороженный, вакуумная упаковка</p>
+      <p class="price">24,50 BYN / кг</p>
+      <div class="controls">
+        <button onclick="changeCount(3, -1)">−</button>
+        <input type="text" id="count_3" value="0" readonly>
+        <button onclick="changeCount(3, 1)">+</button>
+      </div>
+      <button class="cart-button" onclick="addToCart(3)">Добавить в корзину</button>
+    </div>
+  </div>
+
+  <div class="cart-summary">
+    <h3>📦 Корзина</h3>
+    <div id="cart-items">
+      <div class="empty-cart">Корзина пуста</div>
+    </div>
+    <div class="cart-total" id="cart-total">Итого: 0,00 BYN</div>
+  </div>
+
+  <div class="checkout">
+    <h3>📝 Оформить заказ</h3>
+    <input type="text" id="phone" placeholder="Ваш номер телефона" required>
+    <textarea id="address" placeholder="Адрес доставки" rows="3" required></textarea>
+    <button onclick="sendOrder()">📤 Отправить заказ в @Beri_Bel_Bot</button>
+  </div>
+
+  <script>
+    // Инициализация Telegram WebApp
+    if (window.Telegram?.WebApp) {
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
+    }
+
+    // Данные о товарах
+    const products = {
+      1: { name: "Тазобедренная часть говяжья", price: 19.50 },
+      2: { name: "Лопаточная часть говяжья", price: 18.50 },
+      3: { name: "Длиннейшая мышца говяжья", price: 24.50 }
+    };
+
+    let cart = {};
+
+    // Изменение количества
+    function changeCount(id, delta) {
+      const input = document.getElementById(`count_${id}`);
+      let value = parseInt(input.value) + delta;
+      if (value < 0) value = 0;
+      input.value = value;
+    }
+
+    // Добавление в корзину
+    function addToCart(id) {
+      const count = parseInt(document.getElementById(`count_${id}`).value);
+      if (count === 0) {
+        alert("Выберите количество товара");
+        return;
+      }
+      cart[id] = count;
+      updateCart();
+      alert(`Товар добавлен: ${count} кг ${products[id].name}`);
+      document.getElementById(`count_${id}`).value = 0; // сброс счётчика
+    }
+
+    // Обновление корзины
+    function updateCart() {
+      const cartItems = document.getElementById("cart-items");
+      const totalEl = document.getElementById("cart-total");
+      let total = 0;
+      let html = '';
+
+      if (Object.keys(cart).length === 0) {
+        html = '<div class="empty-cart">Корзина пуста</div>';
+      } else {
+        for (const id in cart) {
+          const item = products[id];
+          const sum = item.price * cart[id];
+          total += sum;
+          html += `
+            <div class="cart-item">
+              <span>${item.name} × ${cart[id]} кг</span>
+              <span>${sum.toFixed(2)} BYN</span>
+            </div>
+          `;
+        }
+      }
+
+      cartItems.innerHTML = html;
+      totalEl.textContent = `Итого: ${total.toFixed(2)} BYN`;
+    }
+
+    // Отправка заказа в Telegram
+    function sendOrder() {
+      const phone = document.getElementById("phone").value.trim();
+      const address = document.getElementById("address").value.trim();
+
+      if (!phone || !address) {
+        alert("Заполните телефон и адрес");
+        return;
+      }
+
+      if (Object.keys(cart).length === 0) {
+        alert("Корзина пуста");
+        return;
+      }
+
+      let message = `📦 *НОВЫЙ ЗАКАЗ от клиента*\n\n`;
+      for (const id in cart) {
+        const item = products[id];
+        message += `• ${item.name} — ${cart[id]} кг × ${item.price} BYN = ${(item.price * cart[id]).toFixed(2)} BYN\n`;
+      }
+      message += `\n📞 Телефон: ${phone}\n🏠 Адрес: ${address}`;
+      message += `\n\nВсего: ${document.getElementById("cart-total").textContent}`;
+
+      // Кодировка для ссылки
+      const encoded = encodeURIComponent(message);
+      const url = `https://t.me/Beri_Bel_Bot?text=${encoded}`;
+
+      // Открываем бота с текстом заказа
+      if (window.Telegram?.WebApp) {
+        Telegram.WebApp.openTelegramLink(url);
+      } else {
+        window.open(url, '_blank');
+      }
+    }
+
+    // Инициализация
+    updateCart();
+  </script>
+</body>
+</html>
