@@ -284,48 +284,48 @@
 
     // Отправка заказа в Telegram
     function sendOrder() {
-  const phone = document.getElementById("phone").value.trim();
-  const address = document.getElementById("address").value.trim();
+  const phoneInput = document.getElementById("phone");
+  const addressInput = document.getElementById("address");
+
+  if (!phoneInput || !addressInput) {
+    alert("Ошибка: поля не найдены");
+    return;
+  }
+
+  const phone = phoneInput.value.trim();
+  const address = addressInput.value.trim();
 
   if (!phone) {
-    alert("Пожалуйста, укажите номер телефона");
+    alert("Введите телефон");
     return;
   }
-
   if (!address) {
-    alert("Пожалуйста, укажите адрес доставки");
+    alert("Введите адрес");
     return;
   }
-
   if (Object.keys(cart).length === 0) {
-    alert("Ваша корзина пуста. Добавьте товары.");
+    alert("Корзина пуста");
     return;
   }
 
-  // Формируем сообщение
-  let message = `📦 *НОВЫЙ ЗАКАЗ*\n\n`;
+  let message = "НОВЫЙ ЗАКАЗ\n\n";
   for (const id in cart) {
     const item = products[id];
-    message += `• ${item.name} — ${cart[id]} кг × ${item.price} BYN = ${(item.price * cart[id]).toFixed(2)} BYN\n`;
+    message += `${item.name} — ${cart[id]} кг\n`;
   }
-  message += `\n📞 Телефон: ${phone}\n🏠 Адрес: ${address}`;
-  message += `\n\n${document.getElementById("cart-total").textContent}`;
+  message += `\nТелефон: ${phone}\nАдрес: ${address}`;
 
-  // Кодируем сообщение
-  const encodedMessage = encodeURIComponent(message);
-
-  // Открываем бота с текстом
-  const url = `https://t.me/Beri_Bel_Bot?text=${encodedMessage}`;
+  const encoded = encodeURIComponent(message);
+  const url = `https://t.me/Beri_Bel_Bot?text=${encoded}`;
 
   try {
     if (window.Telegram?.WebApp) {
       Telegram.WebApp.openTelegramLink(url);
     } else {
-      window.open(url, '_blank');
+      window.open(url, "_blank");
     }
-  } catch (error) {
-    alert("Не удалось открыть бота. Попробуйте вручную: @Beri_Bel_Bot");
-    console.error("Ошибка открытия ссылки:", error);
+  } catch (e) {
+    alert("Ошибка: " + e.message);
   }
 }
 
@@ -335,3 +335,4 @@
 </body>
 
 </html>
+
