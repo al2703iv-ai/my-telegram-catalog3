@@ -283,12 +283,13 @@
     }
 
     // Отправка заказа в Telegram
-    function sendOrder() {
+   function sendOrder() {
+  // Проверяем поля
   const phoneInput = document.getElementById("phone");
   const addressInput = document.getElementById("address");
 
   if (!phoneInput || !addressInput) {
-    alert("Ошибка: поля не найдены");
+    alert("Ошибка: не найдены поля ввода");
     return;
   }
 
@@ -300,7 +301,7 @@
     return;
   }
   if (!address) {
-    alert("Введите адрес");
+    alert("Введите адрес доставки");
     return;
   }
   if (Object.keys(cart).length === 0) {
@@ -308,18 +309,22 @@
     return;
   }
 
-  // Формируем сообщение
-  let message = "📦 *НОВЫЙ ЗАКАЗ*\n\n";
+  // Считаем общую сумму вручную (надёжнее!)
+  let total = 0;
+  let itemsText = "";
+
   for (const id in cart) {
     const item = products[id];
-    const sum = (item.price * cart[id]).toFixed(2);
-    message += `• ${item.name} — ${cart[id]} кг × ${item.price} BYN = ${sum} BYN\n`;
+    const sum = item.price * cart[id];
+    total += sum;
+    itemsText += `• ${item.name} — ${cart[id]} кг × ${item.price} BYN = ${sum.toFixed(2)} BYN\n`;
   }
-  message += `\n📞 Телефон: ${phone}\n🏠 Адрес: ${address}`;
 
-  // Добавляем итоговую сумму
-  const totalText = document.getElementById("cart-total").textContent;
-  message += `\n\n${totalText}`;
+  // Формируем сообщение
+  let message = `📦 *НОВЫЙ ЗАКАЗ*\n\n`;
+  message += itemsText;
+  message += `\n📞 Телефон: ${phone}\n🏠 Адрес: ${address}`;
+  message += `\n\n💰 *Итого: ${total.toFixed(2)} BYN*`;
 
   // Кодируем и открываем бота
   const encoded = encodeURIComponent(message);
@@ -329,7 +334,7 @@
     if (window.Telegram?.WebApp) {
       Telegram.WebApp.openTelegramLink(url);
     } else {
-      window.open(url, "_blank");
+      window.open(url, '_blank');
     }
   } catch (e) {
     alert("Не удалось открыть бота. Отправьте заказ вручную.");
@@ -343,5 +348,6 @@
 </body>
 
 </html>
+
 
 
