@@ -284,41 +284,54 @@
 
     // Отправка заказа в Telegram
     function sendOrder() {
-      const phone = document.getElementById("phone").value.trim();
-      const address = document.getElementById("address").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const address = document.getElementById("address").value.trim();
 
-      if (!phone || !address) {
-        alert("Заполните телефон и адрес");
-        return;
-      }
+  if (!phone) {
+    alert("Пожалуйста, укажите номер телефона");
+    return;
+  }
 
-      if (Object.keys(cart).length === 0) {
-        alert("Корзина пуста");
-        return;
-      }
+  if (!address) {
+    alert("Пожалуйста, укажите адрес доставки");
+    return;
+  }
 
-      let message = `📦 *НОВЫЙ ЗАКАЗ от клиента*\n\n`;
-      for (const id in cart) {
-        const item = products[id];
-        message += `• ${item.name} — ${cart[id]} кг × ${item.price} BYN = ${(item.price * cart[id]).toFixed(2)} BYN\n`;
-      }
-      message += `\n📞 Телефон: ${phone}\n🏠 Адрес: ${address}`;
-      message += `\n\nВсего: ${document.getElementById("cart-total").textContent}`;
+  if (Object.keys(cart).length === 0) {
+    alert("Ваша корзина пуста. Добавьте товары.");
+    return;
+  }
 
-      // Кодировка для ссылки
-      const encoded = encodeURIComponent(message);
-      const url = `https://t.me/Beri_Bel_Bot?text=${encoded}`;
+  // Формируем сообщение
+  let message = `📦 *НОВЫЙ ЗАКАЗ*\n\n`;
+  for (const id in cart) {
+    const item = products[id];
+    message += `• ${item.name} — ${cart[id]} кг × ${item.price} BYN = ${(item.price * cart[id]).toFixed(2)} BYN\n`;
+  }
+  message += `\n📞 Телефон: ${phone}\n🏠 Адрес: ${address}`;
+  message += `\n\n${document.getElementById("cart-total").textContent}`;
 
-      // Открываем бота с текстом заказа
-      if (window.Telegram?.WebApp) {
-        Telegram.WebApp.openTelegramLink(url);
-      } else {
-        window.open(url, '_blank');
-      }
+  // Кодируем сообщение
+  const encodedMessage = encodeURIComponent(message);
+
+  // Открываем бота с текстом
+  const url = `https://t.me/Beri_Bel_Bot?text=${encodedMessage}`;
+
+  try {
+    if (window.Telegram?.WebApp) {
+      Telegram.WebApp.openTelegramLink(url);
+    } else {
+      window.open(url, '_blank');
     }
+  } catch (error) {
+    alert("Не удалось открыть бота. Попробуйте вручную: @Beri_Bel_Bot");
+    console.error("Ошибка открытия ссылки:", error);
+  }
+}
 
     // Инициализация
     updateCart();
   </script>
 </body>
+
 </html>
