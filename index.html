@@ -308,13 +308,20 @@
     return;
   }
 
-  let message = "НОВЫЙ ЗАКАЗ\n\n";
+  // Формируем сообщение
+  let message = "📦 *НОВЫЙ ЗАКАЗ*\n\n";
   for (const id in cart) {
     const item = products[id];
-    message += `${item.name} — ${cart[id]} кг\n`;
+    const sum = (item.price * cart[id]).toFixed(2);
+    message += `• ${item.name} — ${cart[id]} кг × ${item.price} BYN = ${sum} BYN\n`;
   }
-  message += `\nТелефон: ${phone}\nАдрес: ${address}`;
+  message += `\n📞 Телефон: ${phone}\n🏠 Адрес: ${address}`;
 
+  // Добавляем итоговую сумму
+  const totalText = document.getElementById("cart-total").textContent;
+  message += `\n\n${totalText}`;
+
+  // Кодируем и открываем бота
   const encoded = encodeURIComponent(message);
   const url = `https://t.me/Beri_Bel_Bot?text=${encoded}`;
 
@@ -325,7 +332,8 @@
       window.open(url, "_blank");
     }
   } catch (e) {
-    alert("Ошибка: " + e.message);
+    alert("Не удалось открыть бота. Отправьте заказ вручную.");
+    console.error(e);
   }
 }
 
@@ -335,4 +343,5 @@
 </body>
 
 </html>
+
 
